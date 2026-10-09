@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cocina Tilka">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Cocina Tilka</title>
+<style>
+*{box-sizing:border-box;-webkit-box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{background:#fcfaf5;color:#1d2a1b;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:17px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+button{font-family:inherit;font-size:inherit;cursor:pointer;-webkit-appearance:none;border-radius:10px}
+input{font-family:inherit;-webkit-appearance:none;border-radius:8px}
+.wrap{padding:20px 20px 60px;max-width:1024px;margin:0 auto}
+h1{margin:0 0 4px;font-size:30px;font-weight:800;color:#274224}
+h2{margin:0;font-size:30px;font-weight:800}
+.label{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5f6b5c}
+.muted{color:#5f6b5c}
+.red-dot{display:inline-block;width:12px;height:12px;border-radius:6px;background:#c43a2b;margin-right:8px}
+.cards{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:10px -7px 0}
+.card{width:50%;padding:7px}
+.card button{width:100%;background:#fff;border:2px solid #e3ded2;padding:18px;text-align:left;color:#1d2a1b;min-height:130px}
+.card b{display:block;font-size:22px;margin-bottom:8px}
+.card span{display:block;color:#5f6b5c;font-size:15px;margin-top:2px}
+.tag{display:inline-block !important;margin-top:10px !important;border-radius:20px;padding:3px 10px;font-size:13px !important;font-weight:700}
+.tag.ok{background:#dcefdc;color:#2f7a3a !important}
+.tag.warn{background:#fbecd2;color:#9a5c05 !important}
+.btn{border:0;background:#274224;color:#fcfaf5;font-weight:700;padding:14px 20px}
+.btn.red{background:#c43a2b}
+.btn.ghost{background:#fff;color:#1d2a1b;border:2px solid #e3ded2}
+.btn.big{font-size:22px;padding:18px 28px}
+.back{background:none;border:0;color:#5f6b5c;font-weight:700;padding:6px 0;margin-bottom:8px}
+.row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-flex-wrap:wrap;flex-wrap:wrap}
+.boveda{background:#e3f0f5;border-radius:12px;padding:10px 16px;margin:12px 0}
+.boveda div{display:inline-block;margin-right:24px}
+.boveda b{display:block;font-size:22px}
+.panel{background:#fff;border:2px solid #e3ded2;border-radius:14px;padding:16px;margin-top:14px}
+.porc input{width:130px;font-size:36px;font-weight:800;text-align:center;border:2px solid #e3ded2;padding:6px;margin:0 8px}
+.porc .btn{width:60px;height:60px;padding:0;font-size:28px}
+.alert{border-radius:10px;padding:10px 14px;margin-top:8px;font-size:15px}
+.alert.warn{background:#fbecd2}
+.alert.bad{background:#f6dcd8}
+.checks{list-style:none;margin:0;padding:0}
+.checks li{border-bottom:1px solid #e3ded2}
+.checks label{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;padding:12px 2px}
+.checks input{width:26px;height:26px;margin:0 12px 0 0;-webkit-appearance:checkbox;-webkit-flex:none;flex:none}
+.checks .nm{-webkit-flex:1;flex:1}
+.checks .nt{display:block;font-size:13px;color:#5f6b5c}
+.checks .q{font-weight:800;font-size:21px;text-align:right;white-space:nowrap;margin-left:10px}
+.checks .q small{font-size:13px;color:#5f6b5c;margin-left:3px}
+.checks li.done .nm{text-decoration:line-through;color:#5f6b5c}
+ol.pasos{margin:6px 0 0;padding-left:24px;color:#5f6b5c;font-size:15px}
+ol.pasos li{margin-bottom:3px}
+
+.cook{position:fixed;top:0;left:0;right:0;bottom:0;background:#274224;color:#fcfaf5;overflow:auto;-webkit-overflow-scrolling:touch;z-index:10}
+.cook.window{background:#5a4a14}
+.cook.alarm{background:#c43a2b}
+.cook.alarm.blink{background:#7e1f15}
+.ctop{padding:12px 20px;border-bottom:1px solid rgba(252,250,245,.2)}
+.ctop .t{-webkit-flex:1;flex:1;font-weight:800;font-size:18px}
+.cbtn{background:rgba(252,250,245,.12);border:2px solid rgba(252,250,245,.35);color:#fcfaf5;font-weight:700;padding:10px 14px;margin-left:8px;font-size:15px}
+.cbtn.on{background:#fcfaf5;color:#274224}
+.prog{display:-webkit-flex;display:flex;padding:10px 20px 0}
+.prog i{-webkit-flex:1;flex:1;height:8px;border-radius:4px;background:rgba(252,250,245,.2);margin-right:4px}
+.prog i.d{background:#8ec0d2}
+.prog i.c{background:#fcfaf5}
+.cmain{display:-webkit-flex;display:flex;padding:16px 20px;-webkit-align-items:flex-start;align-items:flex-start}
+.cleft{-webkit-flex:1.2;flex:1.2;padding-right:20px}
+.cright{-webkit-flex:1;flex:1}
+.sno{font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.8}
+.stitle{font-size:44px;font-weight:800;line-height:1.05;margin:6px 0 14px}
+.fire span{display:inline-block;margin:0 10px 8px 0}
+.fire .f{background:#fcfaf5;color:#c43a2b;border-radius:20px;padding:6px 16px;font-weight:800;font-size:20px}
+.fire .h{font-size:19px;font-weight:600}
+.timer{font-size:150px;font-weight:800;line-height:1;letter-spacing:-4px;margin:6px 0 4px}
+.tsub{font-size:19px;font-weight:600;min-height:26px}
+.snote{background:rgba(252,250,245,.12);border-radius:10px;padding:10px 14px;margin-top:12px}
+.ing{background:#fcfaf5;color:#1d2a1b;border-radius:14px;padding:12px 16px;margin-bottom:10px}
+.ing .r{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center}
+.ing .n{-webkit-flex:1;flex:1;font-size:23px;font-weight:800}
+.ing .q{font-size:36px;font-weight:800;color:#c43a2b;white-space:nowrap}
+.ing .q small{font-size:17px;color:#5f6b5c;margin-left:4px}
+.ing .x{font-size:14px;color:#5f6b5c;margin-top:2px}
+.next{border:2px dashed rgba(252,250,245,.45);border-radius:14px;padding:12px 16px;margin-top:6px}
+.next.soon{border-style:solid;border-color:#fcfaf5;background:rgba(252,250,245,.1)}
+.next .nt{font-size:22px;font-weight:800;margin-top:4px}
+.cbot{display:-webkit-flex;display:flex;padding:12px 20px 24px;-webkit-align-items:stretch;align-items:stretch}
+.cbot .cbtn{margin:0 8px 0 0;font-size:17px;padding:14px 14px}
+.listo{-webkit-flex:1;flex:1;background:#fcfaf5;color:#274224;border:0;border-radius:16px;font-size:34px;font-weight:800;padding:20px}
+.cook.alarm .listo{color:#c43a2b}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:20}
+.modal .box{background:#fff;color:#1d2a1b;border-radius:16px;padding:22px;width:420px;max-width:92%;margin:120px auto 0}
+.modal .box p{margin:8px 0 18px}
+table{border-collapse:collapse;width:100%}
+td,th{padding:9px 8px;border-bottom:1px solid #e3ded2;text-align:left}
+@media (max-width:700px){.card{width:100%}.cmain{display:block}.cleft{padding-right:0}.timer{font-size:96px}.stitle{font-size:32px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var RECETAS = [{"id": "risotto-zapallo", "nombre": "Risotto de Zapallo", "bovedaTemp": 68, "bovedaHoras": 22, "capacidad": 41, "revisada": true, "aviso": "", "ingredientes": [{"id": "agua", "n": "Agua", "q": 200, "u": "ml", "nota": ""}, {"id": "zapallo-cabutia", "n": "Zapallo Cabutia", "q": 115, "u": "g", "nota": "Cocinado al 100 %. Rinde 47 % del peso entero"}, {"id": "arroz-carnaroli", "n": "Arroz Carnaroli", "q": 80, "u": "g", "nota": ""}, {"id": "vino-blanco", "n": "Vino Blanco", "q": 60, "u": "g", "nota": ""}, {"id": "cebolla", "n": "Cebolla", "q": 50, "u": "g", "nota": "Rinde aprox. 85 % del peso entero"}, {"id": "semillas-de-zapallo", "n": "Semillas de Zapallo", "q": 20, "u": "g", "nota": "Van aparte: semillas crunch, se envasan en sobre compostable", "aparte": true}, {"id": "comino", "n": "Comino", "q": 0.1041667, "u": "g", "nota": ""}, {"id": "caldo", "n": "Caldo", "q": 2, "u": "g", "nota": ""}, {"id": "ajo", "n": "Ajo", "q": 2, "u": "g", "nota": ""}, {"id": "pimenton-dulce", "n": "Pimentón Dulce", "q": 0.4166667, "u": "g", "nota": ""}, {"id": "pimienta", "n": "Pimienta", "q": 0.25, "u": "g", "nota": ""}, {"id": "romero", "n": "Romero", "q": 0.2083333, "u": "g", "nota": ""}, {"id": "sal", "n": "Sal", "q": 1.0416667, "u": "g", "nota": ""}], "antes": ["Pesar todos los ingredientes", "Zapallo cocido al 100 %", "Cortar cebolla y ajo"], "pasos": [{"t": "Calentar olla", "fuego": "Medio / Alto", "hasta": "", "min": 30, "max": null, "ing": [], "avisoCada": null, "nota": ""}, {"t": "Dorar ajo y cebolla", "fuego": "Medio", "hasta": "Obtener mínimo dorado", "min": 60, "max": null, "ing": [{"id": "ajo", "pct": null}, {"id": "cebolla", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar sal y pimienta", "fuego": "Medio", "hasta": "Dorar durante", "min": 360, "max": 600, "ing": [{"id": "sal", "pct": null}, {"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar arroz", "fuego": "Medio", "hasta": "Obtener mínimo dorado", "min": 300, "max": null, "ing": [{"id": "arroz-carnaroli", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar vino blanco", "fuego": "Medio", "hasta": "Se evapore", "min": 240, "max": 420, "ing": [{"id": "vino-blanco", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar zapallo", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "zapallo-cabutia", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar caldo", "fuego": "Bajo (no mínimo)", "hasta": "Lentamente hasta terminar cocción", "min": 2700, "max": null, "ing": [{"id": "caldo", "pct": null}, {"id": "agua", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar romero y pimienta", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "romero", "pct": null}, {"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar especias en tandas (2 o 3 tandas)", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "comino", "pct": null}, {"id": "pimenton-dulce", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Apagar y esparcir caliente en bandejas de silicona", "fuego": "Apagado", "hasta": "Capa pareja de 7 mm", "min": null, "max": null, "ing": [], "avisoCada": null, "nota": ""}], "notas": ["Aprox. 2,5 L de agua cada 6 porciones", "No triturar lo deshidratado", "Semillas crunch: tostar a fuego bajo-medio, caramelizar con 1 cda de azúcar, 1 pizca de sal y 1 cda de agua cada 70 g"]}, {"id": "risotto-hongos", "nombre": "Risotto de Hongos", "bovedaTemp": 68, "bovedaHoras": 21, "capacidad": 42, "revisada": false, "aviso": "El comino no tiene paso asignado en la planilla. Revisar.", "ingredientes": [{"id": "agua", "n": "Agua", "q": 210, "u": "ml", "nota": "Incluye el agua de hidratar los hongos"}, {"id": "arroz-carnaroli", "n": "Arroz Carnaroli", "q": 100, "u": "g", "nota": ""}, {"id": "vino-blanco", "n": "Vino Blanco", "q": 60, "u": "g", "nota": ""}, {"id": "cebolla", "n": "Cebolla", "q": 60, "u": "g", "nota": ""}, {"id": "hongo-de-pino", "n": "Hongo de Pino", "q": 15, "u": "g", "nota": "Seco, antes de hidratar"}, {"id": "comino", "n": "Comino", "q": 0.125, "u": "g", "nota": ""}, {"id": "caldo", "n": "Caldo", "q": 3, "u": "g", "nota": ""}, {"id": "ajo", "n": "Ajo", "q": 2, "u": "g", "nota": ""}, {"id": "pimienta", "n": "Pimienta", "q": 0.25, "u": "g", "nota": ""}, {"id": "romero", "n": "Romero", "q": 0.1666667, "u": "cdta", "nota": ""}, {"id": "sal", "n": "Sal", "q": 1.125, "u": "g", "nota": ""}], "antes": ["Hongos: inspeccionar a mano y sacar piedras", "Colar con colador amplio y uno fino, enjuagar rápido con agua fría", "Hidratar 1 hora o más con agua caliente", "Filtrar el agua en un bowl y guardarla para el risotto", "Pesar todos los ingredientes", "Cortar cebolla en juliana (tiras largas y finas) y el ajo"], "pasos": [{"t": "Calentar olla", "fuego": "Medio / Alto", "hasta": "", "min": 30, "max": null, "ing": [], "avisoCada": null, "nota": ""}, {"t": "Dorar ajo y cebolla", "fuego": "Medio", "hasta": "Obtener mínimo dorado", "min": 60, "max": null, "ing": [{"id": "ajo", "pct": null}, {"id": "cebolla", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar sal y pimienta", "fuego": "Medio", "hasta": "Dorar durante", "min": 360, "max": 600, "ing": [{"id": "sal", "pct": null}, {"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar arroz", "fuego": "Medio", "hasta": "Obtener mínimo dorado", "min": 300, "max": null, "ing": [{"id": "arroz-carnaroli", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar vino blanco", "fuego": "Medio", "hasta": "Se evapore", "min": 240, "max": 420, "ing": [{"id": "vino-blanco", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar hongos", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "hongo-de-pino", "pct": null}], "avisoCada": null, "nota": "Mientras arranca la cocción, cortar los hongos en juliana bien chica"}, {"t": "Incorporar caldo", "fuego": "Bajo (no mínimo)", "hasta": "Lentamente hasta terminar cocción", "min": 2700, "max": null, "ing": [{"id": "caldo", "pct": null}, {"id": "agua", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar romero y pimienta", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "romero", "pct": null}, {"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Apagar y esparcir caliente en bandejas de silicona", "fuego": "Apagado", "hasta": "Capa pareja de 7 mm", "min": null, "max": null, "ing": [], "avisoCada": null, "nota": ""}], "notas": ["Una vez que se empieza a tirar el caldo, también van los hongos", "Deshidratado: las placas de arriba secan más lento. Rotar bandejas y dar vuelta el contenido a las 6 h"]}, {"id": "humita", "nombre": "Humita", "bovedaTemp": 68, "bovedaHoras": 21, "capacidad": 29, "revisada": false, "aviso": "Los pasos de la planilla nueva eran copia del risotto. Cargué los de la receta vieja de humita, sin tiempos. La leche en polvo no tiene paso asignado.", "ingredientes": [{"id": "choclo", "n": "Choclo", "q": 250, "u": "g", "nota": "3/4 procesado"}, {"id": "zapallo-anco", "n": "Zapallo Anco", "q": 67.5, "u": "g", "nota": "Hervido"}, {"id": "pimiento-rojo", "n": "Pimiento Rojo", "q": 60, "u": "g", "nota": ""}, {"id": "cebolla", "n": "Cebolla", "q": 60, "u": "g", "nota": ""}, {"id": "leche-en-polvo", "n": "Leche en polvo", "q": 10, "u": "g", "nota": ""}, {"id": "soja-texturizada", "n": "Soja Texturizada", "q": 10, "u": "g", "nota": ""}, {"id": "ajo", "n": "Ajo", "q": 2, "u": "g", "nota": ""}, {"id": "azucar", "n": "Azúcar", "q": 2, "u": "g", "nota": ""}, {"id": "sal", "n": "Sal", "q": 1.7142857, "u": "g", "nota": ""}, {"id": "caldo", "n": "Caldo", "q": 1.58, "u": "g", "nota": ""}, {"id": "pimenton-ahumado", "n": "Pimentón Ahumado", "q": 0.8214286, "u": "g", "nota": ""}, {"id": "aji", "n": "Ají", "q": 0.4642857, "u": "g", "nota": ""}, {"id": "comino", "n": "Comino", "q": 0.1178571, "u": "g", "nota": ""}, {"id": "ajo-en-polvo", "n": "Ajo en polvo", "q": 0.1875, "u": "g", "nota": ""}, {"id": "agua", "n": "Agua", "q": 89.2857, "u": "ml", "nota": ""}], "antes": ["Pesar todos los ingredientes", "Hervir el zapallo", "Procesar 3/4 del choclo"], "pasos": [{"t": "Calentar olla", "fuego": "Medio / Alto", "hasta": "", "min": 30, "max": null, "ing": [], "avisoCada": null, "nota": ""}, {"t": "Dorar ajo, pimiento y cebolla", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": null, "max": null, "ing": [{"id": "ajo", "pct": null}, {"id": "pimiento-rojo", "pct": null}, {"id": "cebolla", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar choclo", "fuego": "Medio / Alto", "hasta": "", "min": null, "max": null, "ing": [{"id": "choclo", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar zapallo hervido", "fuego": "Medio", "hasta": "", "min": null, "max": null, "ing": [{"id": "zapallo-anco", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Triturar con mini pímer", "fuego": "Medio", "hasta": "", "min": null, "max": null, "ing": [], "avisoCada": null, "nota": ""}, {"t": "Incorporar soja texturizada", "fuego": "Medio", "hasta": "", "min": null, "max": null, "ing": [{"id": "soja-texturizada", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar agua", "fuego": "Medio", "hasta": "", "min": null, "max": null, "ing": [{"id": "agua", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar especias y sales", "fuego": "Medio", "hasta": "", "min": null, "max": null, "ing": [{"id": "sal", "pct": null}, {"id": "caldo", "pct": null}, {"id": "azucar", "pct": null}, {"id": "pimenton-ahumado", "pct": null}, {"id": "aji", "pct": null}, {"id": "comino", "pct": null}, {"id": "ajo-en-polvo", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Apagar y esparcir caliente en bandejas de silicona", "fuego": "Apagado", "hasta": "Capa pareja de 7 mm", "min": null, "max": null, "ing": [], "avisoCada": null, "nota": ""}], "notas": []}, {"id": "bolo-carne", "nombre": "Pasta Boloñesa c/ Carne", "bovedaTemp": 68, "bovedaHoras": 21, "capacidad": 78, "revisada": false, "aviso": "Los tiempos parecen copiados del risotto. Sin paso asignado: agua, soja, azúcar, pimentón, comino, nuez moscada, laurel.", "ingredientes": [{"id": "agua", "n": "Agua", "q": 21.05, "u": "ml", "nota": ""}, {"id": "salsa-de-tomate", "n": "Salsa de Tomate", "q": 118.75, "u": "g", "nota": ""}, {"id": "carne-molida", "n": "Carne Molida", "q": 60, "u": "g", "nota": ""}, {"id": "cebolla", "n": "Cebolla", "q": 57.5, "u": "g", "nota": ""}, {"id": "zanahoria", "n": "Zanahoria", "q": 26.25, "u": "g", "nota": ""}, {"id": "vino-blanco", "n": "Vino Blanco", "q": 25, "u": "g", "nota": ""}, {"id": "soja-texturizada", "n": "Soja Texturizada", "q": 20, "u": "g", "nota": "Hidratar: 15 g de caldo y 600 ml de agua cada 150 g de soja"}, {"id": "pan-rallado", "n": "Pan Rallado", "q": 13, "u": "g", "nota": "Mezclar con la carne: 6 partes de carne por 1 de pan rallado"}, {"id": "apio", "n": "Apio", "q": 4.375, "u": "g", "nota": ""}, {"id": "sal", "n": "Sal", "q": 1.71, "u": "g", "nota": ""}, {"id": "caldo", "n": "Caldo", "q": 1.58, "u": "g", "nota": ""}, {"id": "ajo", "n": "Ajo", "q": 2, "u": "g", "nota": ""}, {"id": "azucar", "n": "Azúcar", "q": 0.5, "u": "g", "nota": ""}, {"id": "pimienta", "n": "Pimienta", "q": 0.131, "u": "g", "nota": ""}, {"id": "romero", "n": "Romero", "q": 0.105, "u": "g", "nota": ""}, {"id": "pimenton", "n": "Pimentón", "q": 0.605, "u": "g", "nota": ""}, {"id": "comino", "n": "Comino", "q": 0.157, "u": "g", "nota": ""}, {"id": "nuez-moscada", "n": "Nuez Moscada", "q": 0.0416, "u": "g", "nota": ""}, {"id": "aji-molido", "n": "Ají Molido", "q": 0.125, "u": "g", "nota": ""}, {"id": "laurel", "n": "Laurel", "q": 0.3333333, "u": "hojas", "nota": "8 hojas cada 24 porciones"}], "antes": ["Pesar todos los ingredientes", "Hidratar la soja texturizada", "Mezclar la carne con el pan rallado"], "pasos": [{"t": "Calentar olla", "fuego": "Medio / Alto", "hasta": "", "min": 30, "max": null, "ing": [], "avisoCada": null, "nota": ""}, {"t": "Dorar cebolla, zanahoria y apio", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": 60, "max": null, "ing": [{"id": "cebolla", "pct": null}, {"id": "zanahoria", "pct": null}, {"id": "apio", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar ajo", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": 360, "max": 600, "ing": [{"id": "ajo", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar sal, pimienta y ají", "fuego": "Medio / Alto", "hasta": "", "min": 300, "max": null, "ing": [{"id": "sal", "pct": null}, {"id": "pimienta", "pct": null}, {"id": "aji-molido", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar carne", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": 240, "max": 420, "ing": [{"id": "carne-molida", "pct": null}, {"id": "pan-rallado", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar salsa de tomate", "fuego": "Alto", "hasta": "Se evapore", "min": null, "max": null, "ing": [{"id": "salsa-de-tomate", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar vino blanco", "fuego": "Bajo (no mínimo)", "hasta": "Lentamente hasta terminar cocción", "min": 2700, "max": null, "ing": [{"id": "vino-blanco", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar caldo", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "caldo", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar romero y pimienta", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "romero", "pct": null}, {"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Apagar y esparcir caliente en bandejas de silicona", "fuego": "Apagado", "hasta": "Capa pareja de 7 mm", "min": null, "max": null, "ing": [], "avisoCada": null, "nota": ""}], "notas": ["90 g de pasta + aprox. 50 g de salsa por porción", "Deshidratado: rotar bandejas y dar vuelta el contenido a las 6 h"]}, {"id": "guiso-lentejas", "nombre": "Guiso de Lentejas", "bovedaTemp": 74, "bovedaHoras": 22, "capacidad": 31, "revisada": false, "aviso": "Revisar tiempos. Canela, ají y nuez moscada están como nota en la planilla, no en gramos.", "ingredientes": [{"id": "agua", "n": "Agua", "q": 104.16, "u": "ml", "nota": ""}, {"id": "tomate-triturado", "n": "Tomate Triturado", "q": 76.8333, "u": "g", "nota": ""}, {"id": "lentejas", "n": "Lentejas", "q": 66.6667, "u": "g", "nota": "Hidratadas 10 a 24 h antes"}, {"id": "papa", "n": "Papa", "q": 60.8333, "u": "g", "nota": "Cubos de menos de 1 × 1 cm"}, {"id": "zanahoria", "n": "Zanahoria", "q": 50.6667, "u": "g", "nota": "Rallada"}, {"id": "vino-tinto", "n": "Vino Tinto", "q": 45.3333, "u": "g", "nota": ""}, {"id": "cebolla", "n": "Cebolla", "q": 38.3333, "u": "g", "nota": ""}, {"id": "puerro", "n": "Puerro", "q": 15.8333, "u": "g", "nota": ""}, {"id": "sal", "n": "Sal", "q": 1.375, "u": "g", "nota": ""}, {"id": "caldo", "n": "Caldo", "q": 1.58, "u": "g", "nota": ""}, {"id": "laurel", "n": "Laurel", "q": 0.3333333, "u": "hojas", "nota": "8 hojas cada 24 porciones"}, {"id": "pimenton-ahumado", "n": "Pimentón Ahumado", "q": 1.125, "u": "g", "nota": ""}, {"id": "humo-liquido", "n": "Humo Líquido", "q": 0.125, "u": "g", "nota": ""}, {"id": "canela", "n": "Canela", "q": null, "u": "", "nota": "1/8 cdta cada 24 porciones"}, {"id": "ajo", "n": "Ajo", "q": 2, "u": "g", "nota": ""}, {"id": "comino", "n": "Comino", "q": 0.416, "u": "g", "nota": ""}, {"id": "pimienta", "n": "Pimienta", "q": 0.125, "u": "g", "nota": ""}, {"id": "aji-molido", "n": "Ají Molido", "q": null, "u": "", "nota": "1/8 cdta cada 6 porciones"}, {"id": "nuez-moscada", "n": "Nuez Moscada", "q": null, "u": "", "nota": "2 1/8 cdta cada 24 porciones"}], "antes": ["Lentejas hidratadas desde el día anterior (10 a 24 h)", "Pesar todos los ingredientes", "Rallar zanahoria, cortar papa en cubos chicos"], "pasos": [{"t": "Calentar olla", "fuego": "Medio / Alto", "hasta": "", "min": 30, "max": null, "ing": [], "avisoCada": null, "nota": ""}, {"t": "Incorporar cebolla, puerro, zanahoria y ajo", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": 60, "max": null, "ing": [{"id": "cebolla", "pct": null}, {"id": "puerro", "pct": null}, {"id": "zanahoria", "pct": null}, {"id": "ajo", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar sal y pimienta", "fuego": "Medio / Alto", "hasta": "", "min": 360, "max": 600, "ing": [{"id": "sal", "pct": null}, {"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar vino tinto", "fuego": "Medio / Alto", "hasta": "Dejar evaporar el alcohol", "min": 300, "max": null, "ing": [{"id": "vino-tinto", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar tomate triturado", "fuego": "Medio / Alto", "hasta": "", "min": 240, "max": 420, "ing": [{"id": "tomate-triturado", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar lentejas y papas (juntas)", "fuego": "Medio / Alto", "hasta": "", "min": null, "max": null, "ing": [{"id": "lentejas", "pct": null}, {"id": "papa", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar caldo", "fuego": "Alto", "hasta": "Se evapore", "min": 2700, "max": null, "ing": [{"id": "caldo", "pct": null}, {"id": "agua", "pct": null}], "avisoCada": null, "nota": "Las lentejas se cocinan 40 a 50 min"}, {"t": "Incorporar laurel, pimentón (2 cdas), nuez moscada, canela, ají y comino", "fuego": "Bajo (no mínimo)", "hasta": "Revolver cada 8 minutos aprox.", "min": null, "max": null, "ing": [{"id": "laurel", "pct": null}, {"id": "pimenton-ahumado", "pct": null}, {"id": "nuez-moscada", "pct": null}, {"id": "canela", "pct": null}, {"id": "aji-molido", "pct": null}, {"id": "comino", "pct": null}], "avisoCada": 480, "nota": ""}, {"t": "Seguir incorporando pimentón (1 o 2 cdtas), sal y pimienta", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "pimenton-ahumado", "pct": null}, {"id": "sal", "pct": null}, {"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Al final, tirar el humo líquido", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "humo-liquido", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Apagar y esparcir caliente en bandejas de silicona", "fuego": "Apagado", "hasta": "Capa pareja de 7 mm", "min": null, "max": null, "ing": [], "avisoCada": null, "nota": ""}], "notas": ["Deshidratado: rotar bandejas, dar vuelta el contenido a las 6 h y aplastar la papa si quedan pedazos grandes"]}, {"id": "bolo-veggie", "nombre": "Pasta Boloñesa c/ Soja", "bovedaTemp": 68, "bovedaHoras": 22, "capacidad": 68, "revisada": false, "aviso": "Los pasos venían copiados de la boloñesa con carne; cambié \"carne\" por soja hidratada. La planilla tiene dos filas de caldo. Pimienta y romero sin cantidad.", "ingredientes": [{"id": "agua", "n": "Agua", "q": 125, "u": "ml", "nota": ""}, {"id": "salsa-de-tomate", "n": "Salsa de Tomate", "q": 118.75, "u": "g", "nota": ""}, {"id": "soja-texturizada", "n": "Soja Texturizada", "q": 20, "u": "g", "nota": "Hidratar: 1,25 g de caldo y 600 ml de agua cada 150 g de soja"}, {"id": "cebolla", "n": "Cebolla", "q": 57.5, "u": "g", "nota": ""}, {"id": "zanahoria", "n": "Zanahoria", "q": 26.25, "u": "g", "nota": ""}, {"id": "vino-blanco", "n": "Vino Blanco", "q": 25, "u": "g", "nota": ""}, {"id": "apio", "n": "Apio", "q": 4.375, "u": "g", "nota": ""}, {"id": "caldo", "n": "Caldo", "q": 2, "u": "g", "nota": ""}, {"id": "caldo-2", "n": "Caldo (2ª fila)", "q": 1.58, "u": "g", "nota": "Fila repetida en la planilla"}, {"id": "ajo", "n": "Ajo", "q": 2, "u": "g", "nota": ""}, {"id": "azucar", "n": "Azúcar", "q": null, "u": "", "nota": "1 pizca"}, {"id": "pimienta", "n": "Pimienta", "q": null, "u": "", "nota": "A gusto (sin cantidad en la planilla)"}, {"id": "romero", "n": "Romero", "q": null, "u": "", "nota": "A gusto (sin cantidad en la planilla)"}, {"id": "mix-especias", "n": "Pimentón, nuez moscada, comino, tomillo", "q": null, "u": "", "nota": "A gusto"}], "antes": ["Pesar todos los ingredientes", "Hidratar la soja texturizada"], "pasos": [{"t": "Calentar olla", "fuego": "Medio / Alto", "hasta": "", "min": 30, "max": null, "ing": [], "avisoCada": null, "nota": ""}, {"t": "Dorar cebolla, zanahoria y apio", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": 60, "max": null, "ing": [{"id": "cebolla", "pct": null}, {"id": "zanahoria", "pct": null}, {"id": "apio", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar ajo", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": null, "max": null, "ing": [{"id": "ajo", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar sal, pimienta y ají", "fuego": "Medio / Alto", "hasta": "", "min": null, "max": null, "ing": [{"id": "pimienta", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar soja hidratada", "fuego": "Medio / Alto", "hasta": "Obtener mínimo dorado", "min": 300, "max": null, "ing": [{"id": "soja-texturizada", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar salsa de tomate", "fuego": "Alto", "hasta": "Se evapore", "min": null, "max": null, "ing": [{"id": "salsa-de-tomate", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar vino blanco", "fuego": "Bajo (no mínimo)", "hasta": "Lentamente hasta terminar cocción", "min": null, "max": null, "ing": [{"id": "vino-blanco", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar caldo", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "caldo", "pct": null}, {"id": "caldo-2", "pct": null}, {"id": "agua", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Incorporar romero, pimienta y especias", "fuego": "Bajo (no mínimo)", "hasta": "", "min": null, "max": null, "ing": [{"id": "romero", "pct": null}, {"id": "pimienta", "pct": null}, {"id": "mix-especias", "pct": null}, {"id": "azucar", "pct": null}], "avisoCada": null, "nota": ""}, {"t": "Apagar y esparcir caliente en bandejas de silicona", "fuego": "Apagado", "hasta": "Capa pareja de 7 mm", "min": null, "max": null, "ing": [], "avisoCada": null, "nota": ""}], "notas": ["90 g de pasta + aprox. 50 g de salsa por porción"]}];
+var VERSION_DATOS = "5/10/2026";
+var app = document.getElementById("app");
+var LS_RUN = "tilka-ipad-run-v1", LS_PREF = "tilka-ipad-pref-v1";
+function lsGet(k){ try{ var v=localStorage.getItem(k); return v? JSON.parse(v):null; }catch(e){ return null; } }
+function lsSet(k,v){ try{ if(v==null) localStorage.removeItem(k); else localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+var pref = lsGet(LS_PREF) || {voz:true, sonido:true};
+var S = {view:"home", rid:null, porciones:null, cocinero:"", checks:{}, run:lsGet(LS_RUN), last:null};
+
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function byId(id){ for(var i=0;i<RECETAS.length;i++) if(RECETAS[i].id===id) return RECETAS[i]; return null; }
+function fmtNum(v,dec){
+  var m=Math.pow(10,dec); v=Math.round(v*m)/m;
+  var parts=String(Math.abs(v)).split("."); var ent=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");
+  return (v<0?"-":"")+ent+(parts[1]? ","+parts[1] : "");
+}
+function fmtQty(v,u){
+  if(v==null||isNaN(v)) return "";
+  if(u==="hojas") return fmtNum(Math.max(1,Math.round(v)),0);
+  if(u==="cdta"||u==="cda") return fmtNum(v,1);
+  if(v>=10) return fmtNum(v,0);
+  if(v>=1) return fmtNum(v,1);
+  return fmtNum(v,2);
+}
+function uLabel(u){ return u||""; }
+function totalFor(ing,p){ return ing.q==null? null : ing.q*p; }
+function stepsUsing(rec,id){ var out=[]; for(var i=0;i<rec.pasos.length;i++){ var s=rec.pasos[i].ing||[]; for(var j=0;j<s.length;j++) if(s[j].id===id){ out.push(i+1); break; } } return out; }
+function findIng(rec,id){ for(var i=0;i<rec.ingredientes.length;i++) if(rec.ingredientes[i].id===id) return rec.ingredientes[i]; return null; }
+function stepIngs(rec,step,p){
+  var out=[], list=step.ing||[];
+  for(var k=0;k<list.length;k++){
+    var x=list[k], ing=findIng(rec,x.id); if(!ing) continue;
+    var tot=totalFor(ing,p), where=stepsUsing(rec,ing.id), q=tot, extra="", split=false;
+    if(tot!=null && x.pct!=null){ q=tot*x.pct/100; extra=fmtNum(x.pct,0)+" % del total ("+fmtQty(tot,ing.u)+" "+uLabel(ing.u)+")"; }
+    else if(tot!=null && where.length>1){ extra="Total "+fmtQty(tot,ing.u)+" "+uLabel(ing.u)+" · repartir entre pasos "+where.join(" y "); q=null; split=true; }
+    out.push({ing:ing,q:q,extra:extra,split:split});
+  }
+  return out;
+}
+function warnings(rec,p){
+  var w=[];
+  if(!rec.revisada) w.push({t:"bad",m:"Receta sin revisar. "+(rec.aviso||"Chequeá pasos y tiempos.")});
+  if(p && rec.capacidad && p>rec.capacidad) w.push({t:"bad",m:p+" porciones supera la capacidad de la bóveda ("+rec.capacidad+")."});
+  var libres=[]; for(var i=0;i<rec.ingredientes.length;i++){ var g=rec.ingredientes[i]; if(!g.aparte && stepsUsing(rec,g.id).length===0) libres.push(g.n); }
+  if(libres.length) w.push({t:"warn",m:"Sin paso asignado: "+libres.join(", ")+". Pesalos igual y fijate cuándo van."});
+  return w;
+}
+function pad(n){ return (n<10?"0":"")+n; }
+function fmtT(s){ s=Math.max(0,Math.round(s)); var h=Math.floor(s/3600), m=Math.floor((s%3600)/60), x=s%60; return (h? h+":"+pad(m) : m)+":"+pad(x); }
+function human(s){ if(s<60) return s+" seg"; var m=s/60; return (m%1? fmtNum(m,1) : m)+" min"; }
+function dur(a,b){ return a==null? "sin tiempo" : (b? human(a)+" a "+human(b) : human(a)); }
+
+/* sonido y voz */
+var actx=null;
+function unlockAudio(){ try{ if(!actx){ var C=window.AudioContext||window.webkitAudioContext; if(C) actx=new C(); } if(actx){ var b=actx.createBuffer(1,1,22050), s=actx.createBufferSource(); s.buffer=b; s.connect(actx.destination); if(s.start) s.start(0); else s.noteOn(0); if(actx.resume) actx.resume(); } }catch(e){} }
+function beep(kind){
+  if(!pref.sonido || !actx) return;
+  try{
+    var seq = kind==="alarm"? [880,660,880,660,880] : kind==="soft"? [660,880] : [990];
+    for(var i=0;i<seq.length;i++){
+      var o=actx.createOscillator(), g=actx.createGain(); o.type="square"; o.frequency.value=seq[i];
+      var t=actx.currentTime+i*0.22; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.35,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+0.19);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+0.2);
+    }
+  }catch(e){}
+}
+function say(text){
+  if(!pref.voz || !window.speechSynthesis) return;
+  try{
+    var u=new SpeechSynthesisUtterance(text); u.lang="es-AR"; u.rate=0.95;
+    var vs=speechSynthesis.getVoices(), v=null;
+    for(var i=0;i<vs.length;i++){ if(/^es/i.test(vs[i].lang)){ v=vs[i]; if(/AR|MX|US/i.test(vs[i].lang)) break; } }
+    if(v) u.voice=v;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }catch(e){}
+}
+function sayQty(q,u){ if(q==null) return ""; if(u==="g") return fmtQty(q,u)+" gramos"; if(u==="ml") return fmtQty(q,u)+" mililitros"; return fmtQty(q,u)+" "+u; }
+function speakStep(rec,i,p,prefix){
+  var s=rec.pasos[i]; if(!s) return; var parts=[], li=stepIngs(rec,s,p);
+  for(var k=0;k<li.length;k++) parts.push(li[k].ing.n+" "+(li[k].q!=null? sayQty(li[k].q,li[k].ing.u) : li[k].split? "la parte que corresponde":""));
+  say((prefix||"")+s.t+". "+(parts.length? parts.join(", ")+". ":"")+(s.fuego? "Fuego "+s.fuego+".":""));
+}
+
+/* vistas */
+function render(){
+  if(S.run){ renderCook(); return; }
+  var c=document.querySelector(".cook"); if(c) c.parentNode.removeChild(c);
+  if(S.view==="setup") return renderSetup();
+  if(S.view==="done") return renderDone();
+  renderHome();
+}
+function renderHome(){
+  var h='<div class="wrap"><h1><span class="red-dot"></span>Cocina Tilka</h1><p class="muted" style="margin-top:0">Recetas actualizadas al '+esc(VERSION_DATOS)+'</p><p class="label">¿Qué cocinamos hoy?</p><div class="cards">';
+  for(var i=0;i<RECETAS.length;i++){ var r=RECETAS[i];
+    h+='<div class="card"><button data-go="'+esc(r.id)+'"><b>'+esc(r.nombre)+'</b><span>Bóveda '+esc(r.bovedaTemp)+' °C · '+esc(r.bovedaHoras)+' h</span><span>Máx. '+esc(r.capacidad)+' porciones · '+r.pasos.length+' pasos</span>'+(r.revisada? '<span class="tag ok">Revisada</span>':'<span class="tag warn">A revisar</span>')+'</button></div>';
+  }
+  h+='</div></div>'; app.innerHTML=h;
+  var bs=app.querySelectorAll("[data-go]");
+  for(var j=0;j<bs.length;j++) bs[j].onclick=function(){ S.rid=this.getAttribute("data-go"); var r=byId(S.rid); S.porciones=r.capacidad||30; S.checks={}; S.view="setup"; render(); window.scrollTo(0,0); };
+}
+function renderSetup(){
+  var r=byId(S.rid); var p=Math.max(0,Number(S.porciones)||0); var w=warnings(r,p); var i;
+  var h='<div class="wrap"><button class="back" id="back">← Recetas</button><p class="label">Preparar cocción</p><h2>'+esc(r.nombre)+'</h2>';
+  h+='<div class="boveda"><div><span class="label">Bóveda</span><b>'+esc(r.bovedaTemp)+' °C</b></div><div><span class="label">Tiempo</span><b>'+esc(r.bovedaHoras)+' h</b></div><div><span class="label">Capacidad</span><b>'+esc(r.capacidad)+'</b></div></div>';
+  h+='<div class="panel"><p class="label" style="margin-top:0">Porciones a preparar</p><div class="row porc"><button class="btn ghost" id="menos">−</button><input id="porc" type="number" pattern="[0-9]*" value="'+(p||"")+'"><button class="btn ghost" id="mas">+</button>';
+  h+='<input id="coc" placeholder="¿Quién cocina?" value="'+esc(S.cocinero)+'" style="font-size:18px;border:2px solid #e3ded2;padding:12px;margin-left:12px;width:220px"></div>';
+  for(i=0;i<w.length;i++) h+='<div class="alert '+w[i].t+'">'+esc(w[i].m)+'</div>';
+  var total=r.ingredientes.length+(r.antes||[]).length, hechos=0; for(var k in S.checks) if(S.checks[k]) hechos++;
+  if((r.antes||[]).length){ h+='<p class="label" style="margin-top:18px">Antes de arrancar</p><ul class="checks">';
+    for(i=0;i<r.antes.length;i++){ var ka="a:"+i, on=!!S.checks[ka]; h+='<li class="'+(on?"done":"")+'"><label><input type="checkbox" data-chk="'+ka+'"'+(on?" checked":"")+'><span class="nm">'+esc(r.antes[i])+'</span></label></li>'; }
+    h+='</ul>'; }
+  h+='<p class="label" style="margin-top:18px">Pesado · tildá cada ingrediente cuando esté pesado</p><ul class="checks">';
+  for(i=0;i<r.ingredientes.length;i++){ var g=r.ingredientes[i], t=totalFor(g,p), ki="i:"+g.id, on2=!!S.checks[ki];
+    h+='<li class="'+(on2?"done":"")+'"><label><input type="checkbox" data-chk="'+esc(ki)+'"'+(on2?" checked":"")+'><span class="nm">'+esc(g.n)+(g.nota?'<span class="nt">'+esc(g.nota)+'</span>':'')+'</span><span class="q">'+(t!=null? fmtQty(t,g.u)+'<small>'+esc(uLabel(g.u))+'</small>' : '<small>'+(g.nota?"ver nota":"a gusto")+'</small>')+'</span></label></li>'; }
+  h+='</ul></div>';
+  h+='<div class="panel"><p class="label" style="margin-top:0">Pasos de la cocción</p><ol class="pasos">';
+  for(i=0;i<r.pasos.length;i++) h+='<li>'+esc(r.pasos[i].t)+' · '+esc(dur(r.pasos[i].min,r.pasos[i].max))+'</li>';
+  h+='</ol>';
+  if((r.notas||[]).length){ h+='<p class="label">Notas</p><ul class="pasos" style="color:#5f6b5c;font-size:15px">'; for(i=0;i<r.notas.length;i++) h+='<li>'+esc(r.notas[i])+'</li>'; h+='</ul>'; }
+  h+='</div><div class="row" style="margin-top:18px"><button class="btn red big" id="go"'+(p>0?"":" disabled")+'>Arrancar cocción ▶</button><span class="muted" style="margin-left:14px">'+hechos+' de '+total+' tildados'+(hechos<total? ' · te faltan '+(total-hechos) : ' · todo listo')+'</span></div></div>';
+  app.innerHTML=h;
+  function setP(v){ S.porciones=Math.max(1,v); var y=window.pageYOffset; renderSetup(); window.scrollTo(0,y); }
+  document.getElementById("back").onclick=function(){ S.view="home"; render(); };
+  document.getElementById("menos").onclick=function(){ setP(p-1); };
+  document.getElementById("mas").onclick=function(){ setP(p+1); };
+  var inp=document.getElementById("porc"); inp.onchange=function(){ var v=Number(inp.value)||1; S.porciones=v; setTimeout(function(){ if(S.view==="setup"&&!S.run) setP(v); },200); };
+  document.getElementById("coc").oninput=function(){ S.cocinero=this.value; };
+  var cs=app.querySelectorAll("[data-chk]");
+  for(var j=0;j<cs.length;j++) cs[j].onchange=function(){ S.checks[this.getAttribute("data-chk")]=this.checked; var y=window.pageYOffset; renderSetup(); window.scrollTo(0,y); };
+  document.getElementById("go").onclick=startRun;
+}
+
+/* cocción */
+function startRun(){
+  unlockAudio(); var pi=document.getElementById("porc"); if(pi&&Number(pi.value)>0) S.porciones=Number(pi.value);
+  var r=byId(S.rid), now=Date.now();
+  S.run={rec:JSON.parse(JSON.stringify(r)), p:Number(S.porciones), cocinero:S.cocinero, idx:0, inicio:now, stepStart:now, pausedAt:null, pausedTotal:0, flags:{}, log:[], muted:false};
+  lsSet(LS_RUN,S.run); beep("tick"); speakStep(S.run.rec,0,S.run.p,"Arrancamos. Paso 1: "); render();
+}
+function elapsed(){ var R=S.run, end=R.pausedAt||Date.now(); return (end-R.stepStart-R.pausedTotal)/1000; }
+function save(){ lsSet(LS_RUN,S.run); }
+function nextStep(){
+  unlockAudio();
+  var R=S.run, rec=R.rec; R.log.push({t:rec.pasos[R.idx].t, dur:Math.round(elapsed())});
+  if(R.idx>=rec.pasos.length-1) return finishRun();
+  R.idx++; R.stepStart=Date.now(); R.pausedAt=null; R.pausedTotal=0; R.flags={}; R.muted=false; save();
+  beep("tick"); speakStep(rec,R.idx,R.p,"Paso "+(R.idx+1)+": "); renderCook();
+}
+function prevStep(){ var R=S.run; if(!R.idx) return; R.idx--; R.log.pop(); R.stepStart=Date.now(); R.pausedAt=null; R.pausedTotal=0; R.flags={}; R.muted=false; save(); renderCook(); }
+function finishRun(){
+  var R=S.run; S.last={receta:R.rec.nombre, porciones:R.p, cocinero:R.cocinero, inicio:R.inicio, fin:Date.now(), pasos:R.log};
+  S.run=null; lsSet(LS_RUN,null); S.view="done"; say("Cocción terminada. Esparcir caliente en las bandejas."); beep("soft"); render();
+}
+function renderCook(){
+  var R=S.run, rec=R.rec, s=rec.pasos[R.idx], nx=rec.pasos[R.idx+1], i;
+  app.innerHTML="";
+  var el=document.querySelector(".cook"); if(!el){ el=document.createElement("div"); el.className="cook"; document.body.appendChild(el); }
+  var li=stepIngs(rec,s,R.p), nli=nx? stepIngs(rec,nx,R.p):[];
+  var h='<div class="ctop row"><div class="t">'+esc(rec.nombre)+' <span style="opacity:.7">· '+R.p+' porciones'+(R.cocinero? ' · '+esc(R.cocinero):'')+'</span></div><span id="tot" style="opacity:.8"></span>';
+  h+='<button class="cbtn'+(pref.voz?" on":"")+'" id="voz">Voz</button><button class="cbtn'+(pref.sonido?" on":"")+'" id="son">Sonido</button><button class="cbtn" id="salir">Terminar</button></div>';
+  h+='<div class="prog">'; for(i=0;i<rec.pasos.length;i++) h+='<i class="'+(i<R.idx?"d":i===R.idx?"c":"")+'"></i>'; h+='</div>';
+  h+='<div class="cmain"><div class="cleft"><div class="sno">Paso '+(R.idx+1)+' de '+rec.pasos.length+'</div><div class="stitle">'+esc(s.t)+'</div><div class="fire">'+(s.fuego?'<span class="f">Fuego '+esc(s.fuego)+'</span>':'')+(s.hasta?'<span class="h">Hasta que: '+esc(s.hasta)+'</span>':'')+'</div>';
+  h+='<div class="timer" id="timer">0:00</div><div class="tsub" id="tsub"></div>'+(s.nota?'<div class="snote">'+esc(s.nota)+'</div>':'')+'</div><div class="cright">';
+  if(li.length){ for(i=0;i<li.length;i++){ var x=li[i];
+    h+='<div class="ing"><div class="r"><div class="n">'+esc(x.ing.n)+'</div><div class="q">'+(x.q!=null? fmtQty(x.q,x.ing.u)+'<small>'+esc(uLabel(x.ing.u))+'</small>' : x.split? '<small>repartir</small>' : '<small>'+esc(x.ing.nota||"a gusto")+'</small>')+'</div></div>'+(x.extra?'<div class="x">'+esc(x.extra)+'</div>':'')+'</div>'; } }
+  else h+='<p style="opacity:.75;font-size:18px">En este paso no se agrega ningún ingrediente.</p>';
+  h+='<div class="next" id="next">';
+  if(nx){ var ns=[]; for(i=0;i<nli.length;i++) ns.push(esc(nli[i].ing.n)+(nli[i].q!=null? " "+fmtQty(nli[i].q,nli[i].ing.u)+" "+esc(uLabel(nli[i].ing.u)):""));
+    h+='<div class="label" style="color:#fcfaf5;opacity:.75">Próximo paso</div><div class="nt">'+esc(nx.t)+'</div><div>'+(ns.join(" · ")||(nx.fuego? "Fuego "+esc(nx.fuego):""))+'</div>'; }
+  else h+='<div class="label" style="color:#fcfaf5;opacity:.75">Último paso</div><div class="nt">Al tocar LISTO termina la cocción</div>';
+  h+='</div></div></div>';
+  h+='<div class="cbot"><button class="cbtn" id="prev"'+(R.idx?"":" disabled")+'>← Anterior</button><button class="cbtn" id="pausa">'+(R.pausedAt?"Seguir":"Pausa")+'</button><button class="cbtn" id="mas1">+1 min</button><button class="cbtn" id="mute" style="display:none">Silenciar</button><button class="listo" id="listo">LISTO ✓</button></div>';
+  el.innerHTML=h;
+  document.getElementById("listo").onclick=nextStep;
+  document.getElementById("prev").onclick=prevStep;
+  document.getElementById("pausa").onclick=function(){ if(R.pausedAt){ R.pausedTotal+=Date.now()-R.pausedAt; R.pausedAt=null; } else R.pausedAt=Date.now(); save(); renderCook(); };
+  document.getElementById("mas1").onclick=function(){ R.stepStart+=60000; R.flags={}; R.muted=false; save(); tick(); };
+  document.getElementById("mute").onclick=function(){ R.muted=true; save(); tick(); };
+  document.getElementById("voz").onclick=function(){ unlockAudio(); pref.voz=!pref.voz; lsSet(LS_PREF,pref); if(!pref.voz){ try{speechSynthesis.cancel();}catch(e){} } renderCook(); };
+  document.getElementById("son").onclick=function(){ unlockAudio(); pref.sonido=!pref.sonido; lsSet(LS_PREF,pref); renderCook(); };
+  document.getElementById("salir").onclick=function(){
+    var m=document.createElement("div"); m.className="modal";
+    m.innerHTML='<div class="box"><b style="font-size:20px">¿Terminar la cocción ahora?</b><p>Se cierra la cocción en el paso actual.</p><div style="text-align:right"><button class="btn ghost" id="mx">Cancelar</button> <button class="btn red" id="mok">Terminar</button></div></div>';
+    document.body.appendChild(m);
+    document.getElementById("mx").onclick=function(){ m.parentNode.removeChild(m); };
+    document.getElementById("mok").onclick=function(){ m.parentNode.removeChild(m); finishRun(); };
+  };
+  tick();
+}
+var blink=false;
+function tick(){
+  var R=S.run, el=document.querySelector(".cook"); if(!R||!el) return;
+  var s=R.rec.pasos[R.idx], nx=R.rec.pasos[R.idx+1], e=elapsed();
+  var T=document.getElementById("timer"), sub=document.getElementById("tsub"), nextEl=document.getElementById("next"), mute=document.getElementById("mute");
+  if(!T) return;
+  document.getElementById("tot").textContent="Total "+fmtT((Date.now()-R.inicio)/1000)+"  ";
+  var mode="normal", txt, st, soon=false, nxName=nx? nx.t : "terminar";
+  if(s.min==null){ txt=fmtT(e); st=R.pausedAt? "En pausa" : "Sin tiempo fijo · tocá LISTO cuando esté"; }
+  else if(e<s.min){ txt=fmtT(s.min-e); st=(s.max? "Mínimo "+human(s.min)+" · máximo "+human(s.max) : "Duración "+human(s.min))+(R.pausedAt?" · En pausa":"");
+    if(s.min-e<=30 && s.min>=60 && !R.flags.pre){ R.flags.pre=true; save(); beep("tick"); say("Preparate. En 30 segundos: "+nxName); }
+    soon = s.min-e<=30; }
+  else if(s.max && e<s.max){ mode="window"; txt=fmtT(s.max-e); st="Chequeá el punto"+(s.hasta? ": "+s.hasta.toLowerCase():"")+" · quedan hasta el máximo"; soon=true;
+    if(!R.flags.min){ R.flags.min=true; save(); beep("soft"); say("Tiempo mínimo cumplido. Chequeá"+(s.hasta? " que "+s.hasta.toLowerCase():"")+". Si está, tocá listo"+(nx? " y sigue: "+nx.t : "")+"."); } }
+  else { mode="alarm"; soon=true; txt="+"+fmtT(e-(s.max||s.min)); st= nx? "¡Hora de pasar al paso siguiente! "+nx.t : "¡Tiempo! Tocá LISTO para terminar";
+    if(!R.muted && !R.pausedAt && Date.now()-(R.flags.alarmAt||0)>15000){ R.flags.alarmAt=Date.now(); save(); beep("alarm");
+      if(!R.flags.said){ R.flags.said=true; if(nx) speakStep(R.rec,R.idx+1,R.p,"Hora de: "); else say("Tiempo. Terminamos."); } } }
+  if(s.avisoCada && !R.pausedAt){ var n=Math.floor(e/s.avisoCada); if(n>0 && n!==R.flags.aviso){ R.flags.aviso=n; save(); beep("soft"); say("Revolver"); } if(mode==="normal") st+=" · aviso para revolver cada "+human(s.avisoCada); }
+  T.textContent=txt; sub.textContent=st;
+  nextEl.className="next"+(soon?" soon":"");
+  blink=!blink;
+  el.className="cook"+(mode==="window"?" window":"")+(mode==="alarm"&&!R.pausedAt? " alarm"+(blink?" blink":""):"");
+  mute.style.display=(mode==="alarm"&&!R.muted)? "":"none";
+}
+setInterval(function(){ if(S.run) tick(); },500);
+
+function renderDone(){
+  var d=S.last, h='<div class="wrap"><p class="label">Cocción terminada</p><h2>'+esc(d.receta)+' · '+d.porciones+' porciones</h2><p class="muted">'+(d.cocinero? esc(d.cocinero)+' · ':'')+'Duración total '+fmtT((d.fin-d.inicio)/1000)+'</p><div class="panel"><table><tr><th>#</th><th>Paso</th><th>Tiempo real</th></tr>';
+  for(var i=0;i<d.pasos.length;i++) h+='<tr><td>'+(i+1)+'</td><td>'+esc(d.pasos[i].t)+'</td><td>'+fmtT(d.pasos[i].dur)+'</td></tr>';
+  h+='</table></div><p><button class="btn big" id="home">Volver al inicio</button></p></div>';
+  app.innerHTML=h; document.getElementById("home").onclick=function(){ S.view="home"; render(); };
+}
+document.addEventListener("touchstart",unlockAudio,false);
+render();
+</script>
+</body>
+</html>
